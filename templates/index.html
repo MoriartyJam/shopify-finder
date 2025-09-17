@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Перевірка сайту на Shopify — Миттєвий аналіз</title>
+  <meta name="description" content="Швидка перевірка: чи побудований сайт на Shopify. Вставте URL і отримайте результат за кілька секунд."/>
+  <meta name="theme-color" content="#008060"/>
+  <!-- Open Graph -->
+  <meta property="og:title" content="Перевірка сайту на Shopify — Миттєвий аналіз"/>
+  <meta property="og:description" content="Вставте URL і дізнайтесь, чи сайт на Shopify. Безкоштовно, без реєстрації."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="{{ request.url if request else '' }}"/>
+  <meta property="og:image" content="/static/og.png"/>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16.png') }}">
+
+  <style>
+    /* === Shopify-like (Polaris-lite) design tokens === */
+    :root{
+      --bg:#F6F6F7;
+      --bg-hero:#F0F7F4;
+      --surface:#FFFFFF;
+      --border:#DFE3E8;
+      --text:#1C1C1C;
+      --muted:#637381;
+      --link:#2C6ECB;
+      --primary:#008060;       /* Shopify green */
+      --primary-600:#006e52;   /* darker */
+      --primary-50:#E6F4EF;    /* light tint */
+      --focus-ring: rgba(0,128,96,.35);
+      --ok:#10B981;
+      --warn:#EF4444;
+      --shadow:0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(35,55,99,.08);
+      --radius:14px;
+      --radius-sm:10px;
+      --radius-lg:20px;
+    }
+
+    /* Base */
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Arial,system-ui,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(900px 300px at 10% -40%, rgba(0,128,96,.12), transparent 60%),
+        radial-gradient(700px 260px at 90% -20%, rgba(44,110,203,.10), transparent 60%),
+        var(--bg);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{ color:var(--link); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{ max-width:1060px; margin:0 auto; padding:0 20px; }
+
+    /* Header (простий брендинг) */
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(180%) blur(8px);
+      background:rgba(255,255,255,.7);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px;
+    }
+    .brand-badge{
+      width:32px; height:32px; border-radius:8px; display:grid; place-items:center;
+      background:linear-gradient(135deg, var(--primary), var(--primary-600));
+      color:#fff; font-weight:800;
+      box-shadow:0 4px 12px rgba(0,128,96,.25);
+    }
+    .nav-mini{ color:var(--muted); font-size:14px; }
+
+    /* Hero */
+    .hero{
+      padding:64px 0 28px;
+      background:
+        radial-gradient(600px 240px at 20% -10%, rgba(0,128,96,.12), transparent 60%),
+        radial-gradient(520px 220px at 80% -20%, rgba(44,110,203,.12), transparent 60%),
+        linear-gradient(0deg, var(--bg-hero), transparent 40%);
+    }
+    .hero-grid{
+      display:grid; grid-template-columns: 1.15fr .85fr; gap:28px; align-items:center;
+    }
+    @media (max-width: 900px){
+      .hero-grid{ grid-template-columns:1fr; }
+    }
+    .card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .hero h1{ margin:0 0 10px; font-size:38px; line-height:1.15; letter-spacing:.2px; }
+    .sub{ margin:0 0 16px; color:var(--muted); font-size:16px; }
+
+    /* Form */
+    .form{
+      display:flex; gap:12px; margin:16px 0;
+      background:#fff; border:1px solid var(--border); padding:10px; border-radius:var(--radius-sm);
+    }
+    .form input[type=url]{
+      flex:1; padding:12px 14px;
+      border:1px solid #E4E8EE; border-radius:10px; background:#fff; color:var(--text);
+      outline:none; transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    .form input[type=url]::placeholder{ color:#9AA4AF; }
+    .form input[type=url]:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px var(--focus-ring);
+    }
+    .btn{
+      padding:12px 16px; border-radius:10px;
+      border:1px solid var(--primary);
+      background:linear-gradient(135deg, var(--primary), var(--primary-600));
+      color:#fff; font-weight:700; cursor:pointer;
+      transition:transform .08s ease, filter .12s ease, box-shadow .12s ease, opacity .2s ease;
+      box-shadow:0 6px 16px rgba(0,128,96,.25);
+    }
+    .btn:hover{ filter:brightness(.98); }
+    .btn:active{ transform:translateY(1px); }
+    .btn[disabled]{ opacity:.7; cursor:progress; }
+
+    /* Trust row */
+    .trust{
+      display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; color:var(--muted); font-size:14px;
+    }
+    .trust .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px; background:var(--primary-50);
+      border:1px solid #CBE7DD; color:#0E6C53; font-weight:600;
+    }
+    .trust .chip svg{ opacity:.9; }
+
+    /* Result */
+    .res{
+      margin-top:16px; padding:14px 16px;
+      border-radius:var(--radius-sm); border:1px solid var(--border); background:#FAFBFC;
+    }
+    .res.ok{ border-color:#B7ECD5; background:#F1FFF8; }
+    .res.warn{ border-color:#F6C6C6; background:#FFF6F6; }
+    .meta{ margin-top:10px; color:var(--muted); font-size:14px; }
+    details{ margin-top:10px; }
+    code{ background:#F1F2F3; padding:2px 6px; border-radius:6px; border:1px solid var(--border); }
+
+    /* How it works + Features */
+    .section{ padding:40px 0; }
+    .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    @media (max-width: 900px){ .grid-3{ grid-template-columns:1fr; } }
+    .feat{ display:flex; gap:12px; }
+    .feat-ico{
+      flex:0 0 44px; height:44px; border-radius:10px;
+      display:grid; place-items:center; background:#F2FBF7; border:1px solid #CDE8DE; color:#0E6C53;
+    }
+    .feat h3{ margin:0 0 6px; font-size:18px; }
+    .feat p{ margin:0; color:var(--muted); font-size:14px; }
+
+    /* FAQ */
+    .faq details{ border:1px solid var(--border); border-radius:12px; background:#fff; padding:14px 16px; }
+    .faq details + details{ margin-top:12px; }
+    .faq summary{ cursor:pointer; font-weight:600; }
+    .faq p{ color:var(--muted); }
+
+    /* Footer */
+    .footer{ border-top:1px solid var(--border); padding:18px 0; color:var(--muted); font-size:13px; text-align:center; }
+
+    /* Spinner Overlay */
+    .spinner-overlay{
+      position:fixed; inset:0; display:none;
+      align-items:center; justify-content:center;
+      background:rgba(246,246,247,.75);
+      backdrop-filter: blur(3px);
+      z-index:9999;
+    }
+    body.loading .spinner-overlay{ display:flex; }
+    .spinner{
+      width:66px; height:66px; border-radius:50%;
+      border:6px solid rgba(33,43,54,.12);
+      border-top-color: var(--primary);
+      animation:spin 1s linear infinite;
+      margin:auto;
+      box-shadow:0 4px 12px rgba(0,128,96,.25);
+    }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce){
+      .spinner{ animation:none; border-top-color:rgba(33,43,54,.45); }
+    }
+    .spinner-text{ margin-top:12px; color:var(--muted); font-size:14px; text-align:center; }
+
+    /* Small helpers */
+    .fade-in{ animation:fade .3s ease both; }
+    @keyframes fade{ from{ opacity:0; transform:translateY(4px);} to{ opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+  <!-- Loading overlay -->
+  <div class="spinner-overlay" aria-live="polite" aria-busy="true">
+    <div>
+      <div class="spinner" role="status" aria-label="Триває перевірка…"></div>
+      <div class="spinner-text">Перевіряємо сайт…</div>
+    </div>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">S</div>
+        <div>Shopify Detector</div>
+      </div>
+      <div class="nav-mini">Безкоштовно · Без реєстрації</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="card fade-in">
+        <h1>Перевірка сайту на Shopify — за секунди</h1>
+        <p class="sub">Вставте URL, і ми знайдемо характерні заголовки, скрипти та спробуємо <code>/cart.js</code> для підтвердження.</p>
+
+        <form id="checker-form" class="form" method="post" novalidate>
+          <input id="site_url" type="url" name="site_url" placeholder="https://example.com" value="{{ input_value|e }}" required>
+          <button id="submit-btn" class="btn" type="submit">Перевірити</button>
+        </form>
+
+        <div class="trust">
+          <div class="chip" title="Швидко">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M13 3a9 9 0 1 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Результат за ~1–2 сек
+          </div>
+          <div class="chip" title="Безкоштовно">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v6c0 4-8 8-8 8s-8-4-8-8V7l8-4Z" stroke="currentColor" stroke-width="2" /></svg>
+            Безкоштовно
+          </div>
+          <div class="chip" title="Без збереження даних">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M7 3h10a2 2 0 0 1 2 2v14l-7-4-7 4V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/></svg>
+            Дані не зберігаємо
+          </div>
+        </div>
+
+        {% if result %}
+          <div class="res {{ 'warn' if '❌' in result else 'ok' }}">
+            {{ result }}
+            {% if final_url %}
+              <div class="meta">Підсумковий URL після редиректів: <a href="{{ final_url|e }}" target="_blank" rel="noopener">{{ final_url|e }}</a></div>
+            {% endif %}
+            {% if confidence %}
+              <div class="meta">Впевненість: <b>{{ confidence }}</b></div>
+            {% endif %}
+            {% if details and details|length > 0 %}
+              <details>
+                <summary>Показати деталі перевірки</summary>
+                <ul>
+                  {% for d in details %}
+                    <li>{{ d }}</li>
+                  {% endfor %}
+                </ul>
+              </details>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Side card: “Як це працює” -->
+      <div class="card fade-in">
+        <div class="feat">
+          <div class="feat-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <h3>1. Аналіз заголовків</h3>
+            <p>Шукаємо X-Shopify-* та інші сигнали на рівні HTTP-відповіді.</p>
+          </div>
+        </div>
+        <div class="feat" style="margin-top:12px;">
+          <div class="feat-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <h3>2. Пошук у розмітці</h3>
+            <p>Перевіряємо скрипти, змінні <code>window.Shopify</code>, CDN-посилання, тощо.</p>
+          </div>
+        </div>
+        <div class="feat" style="margin-top:12px;">
+          <div class="feat-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 9v3l2 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <h3>3. Перевірка <code>/cart.js</code></h3>
+            <p>Якщо доступний валідний JSON — впевненість стає високою.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-3">
+        <div class="card">
+          <div class="feat">
+            <div class="feat-ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>Надійні сигнали</h3>
+              <p>Заголовки, кукі та маркери теми. Комбінуємо для максимальної точності.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="feat">
+            <div class="feat-ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h3>Швидко та безкоштовно</h3>
+              <p>Ніяких логінів. Просто вставляєте URL — і готово.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="feat">
+            <div class="feat-ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div>
+              <h3>Прозорі деталі</h3>
+              <p>Показуємо, які саме сигнали знайдені, щоб ви розуміли результат.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="section faq">
+        <h2 style="margin:0 0 14px;">Часті питання</h2>
+        <details>
+          <summary>Чому інколи впевненість «середня»?</summary>
+          <p>Коли присутні окремі сигнали (наприклад, лише кукі або лише маркери у HTML), але <code>/cart.js</code> не повертає очікуваний JSON. Це все одно ознаки Shopify, просто з меншою строгостю.</p>
+        </details>
+        <details>
+          <summary>Чи зберігаєте ви мої запити?</summary>
+          <p>Ні. Сервіс не зберігає введені адреси та результати перевірок.</p>
+        </details>
+        <details>
+          <summary>Чи можливі хибні спрацювання?</summary>
+          <p>Так, це евристики. Наприклад, кастомні проксі/захисти або headless-вітрини можуть змінювати відповіді.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="container">
+      © 2025 Shopify Detector · <a href="{{ url_for('privacy') }}">Політика конфіденційності</a>
+    </div>
+  </div>
+
+  <script>
+    // Показуємо спінер до відповіді сервера (перезавантаження сторінки)
+    const form = document.getElementById('checker-form');
+    const btn  = document.getElementById('submit-btn');
+    form.addEventListener('submit', function () {
+      const urlInput = document.getElementById('site_url');
+      if (!urlInput.value.trim()) return;
+      document.body.classList.add('loading');
+      btn.setAttribute('disabled', 'disabled');
+      btn.textContent = 'Перевіряємо…';
+    });
+
+    // Якщо повернулися з кешу браузера — прибрати лоадер/повернути кнопку
+    window.addEventListener('pageshow', () => {
+      document.body.classList.remove('loading');
+      const btn = document.getElementById('submit-btn');
+      if (btn){
+        btn.removeAttribute('disabled');
+        btn.textContent = 'Перевірити';
+      }
+    });
+  </script>
+</body>
+</html>
+

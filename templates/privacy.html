@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Політика конфіденційності — Shopify Detector</title>
+  <meta name="description" content="Політика конфіденційності сервісу перевірки сайтів на Shopify."/>
+  <meta name="theme-color" content="#008060"/>
+  <style>
+    :root{
+      --bg:#F6F6F7;
+      --surface:#FFFFFF;
+      --border:#DFE3E8;
+      --text:#1C1C1C;
+      --muted:#637381;
+      --link:#2C6ECB;
+      --primary:#008060;
+      --primary-600:#006e52;
+      --focus-ring: rgba(0,128,96,.35);
+      --shadow:0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(35,55,99,.08);
+      --radius:14px;
+      --radius-sm:10px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; color:var(--text); background:var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Arial,system-ui,"Apple Color Emoji","Segoe UI Emoji";
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{ color:var(--link); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(180%) blur(8px);
+      background:rgba(255,255,255,.7);
+      border-bottom:1px solid var(--border);
+    }
+    .container{ max-width:1060px; margin:0 auto; padding:0 20px; }
+    .topbar-inner{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; }
+    .brand-badge{
+      width:32px; height:32px; border-radius:8px; display:grid; place-items:center;
+      background:linear-gradient(135deg, var(--primary), var(--primary-600)); color:#fff;
+      box-shadow:0 4px 12px rgba(0,128,96,.25);
+    }
+
+    .wrap{ padding:40px 0 28px; }
+    .card{
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:24px; box-shadow:var(--shadow);
+    }
+    h1{ margin:0 0 10px; font-size:34px; }
+    .muted{ color:var(--muted); }
+    h2{ margin:24px 0 10px; font-size:22px; }
+    h3{ margin:18px 0 8px; font-size:18px; }
+    p{ line-height:1.65; }
+    ul{ margin:8px 0 16px 18px; }
+    .toc{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; }
+    .toc a{ display:block; padding:6px 0; }
+    .badge{ display:inline-block; padding:6px 8px; border-radius:8px; background:#E6F4EF; color:#0E6C53; border:1px solid #CBE7DD; font-weight:600; }
+    .footer{ border-top:1px solid var(--border); padding:18px 0; color:var(--muted); font-size:13px; text-align:center; margin-top:26px; }
+  </style>
+</head>
+<body>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="{{ url_for('index') }}">
+        <div class="brand-badge">S</div>
+        <div>Shopify Detector</div>
+      </a>
+      <div class="muted" style="font-size:14px;">Політика конфіденційності</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="container">
+      <div class="card">
+        <h1>Політика конфіденційності</h1>
+        <p class="muted">Останнє оновлення: {{ last_updated or "—" }}</p>
+
+        <p>Ця Політика пояснює, як сервіс <b>{{ company_name or "Shopify Detector" }}</b> (“ми”, “наш сервіс”) обробляє дані, коли ви користуєтесь перевіркою сайту на Shopify.</p>
+
+        <div class="toc">
+          <strong>Зміст</strong>
+          <a href="#who">1. Хто ми</a>
+          <a href="#what">2. Які дані ми обробляємо</a>
+          <a href="#why">3. Мета та правові підстави</a>
+          <a href="#cookies">4. Файли cookie та подібні технології</a>
+          <a href="#share">5. Передача та розкриття даних</a>
+          <a href="#retention">6. Строк зберігання</a>
+          <a href="#security">7. Безпека</a>
+          <a href="#rights">8. Ваші права</a>
+          <a href="#intl">9. Міжнародні передання</a>
+          <a href="#changes">10. Зміни цієї Політики</a>
+          <a href="#contact">11. Контакти</a>
+        </div>
+
+        <h2 id="who">1. Хто ми</h2>
+        <p><b>{{ company_name or "Shopify Detector" }}</b> — інструмент для технічної перевірки того, чи побудовано вебсайт на платформі Shopify. Контакт для питань приватності: <a href="mailto:{{ contact_email or 'privacy@example.com' }}">{{ contact_email or 'privacy@example.com' }}</a>.</p>
+
+        <h2 id="what">2. Які дані ми обробляємо</h2>
+        <p>Коли ви вставляєте URL для перевірки, ми виконуємо технічні HTTP-запити до вказаного домену (та, за потреби, до його шляху <code>/cart.js</code>) для визначення характерних ознак Shopify. Ми <span class="badge">не зберігаємо</span> введені URL та результати перевірки на постійній основі.</p>
+        <h3>Технічні дані, що можуть оброблятися під час запиту:</h3>
+        <ul>
+          <li>введений вами URL (у пам’яті запиту, без довготривалого зберігання);</li>
+          <li>IP-адреса, дата/час, user-agent вашого браузера (стандартні веб-логи сервера);</li>
+          <li>зміст HTML-відповіді цільового сайту (тимчасово в оперативній пам’яті для аналізу маркерів);</li>
+          <li>HTTP-заголовки цільового сайту (наприклад, X-Shopify-*), статуси, типи вмісту.</li>
+        </ul>
+
+        <h2 id="why">3. Мета та правові підстави</h2>
+        <p>Мета обробки — надати функціонал перевірки сайту на Shopify. Правові підстави (для користувачів ЄЕЗ/ВБ): <i>легітимний інтерес</i> (ст. 6(1)(f) GDPR) — забезпечення роботи сервісу; <i>виконання договору</i> (ст. 6(1)(b)) — надання запитаної вами послуги перевірки.</p>
+
+        <h2 id="cookies">4. Файли cookie та подібні технології</h2>
+        <p>Наш сервіс може використовувати суто технічні cookie (наприклад, для захисту від зловживань або збереження станів інтерфейсу). Аналітичні/маркетингові cookie за замовчуванням не вмикаються. Якщо ми додамо аналітику у майбутньому, ми оновимо цю Політику та/або покажемо банер з вибором згоди.</p>
+
+        <h2 id="share">5. Передача та розкриття даних</h2>
+        <p>Ми не продаємо та не передаємо ваші персональні дані стороннім особам з маркетинговою метою. Доступ до логів та технічних даних можуть мати наші підрядники з хостингу/інфраструктури (наприклад, провайдер хостингу, CDN), які діють за договором обробника даних та лише для підтримки роботи сервісу.</p>
+        <p>Зверніть увагу: коли ви перевіряєте сторонній сайт, ваш браузер не взаємодіє з ним безпосередньо — запит виконує наш сервер. Вміст стороннього сайту може містити сторонні ресурси; ми не контролюємо їхню політику приватності.</p>
+
+        <h2 id="retention">6. Строк зберігання</h2>
+        <p>Оперативні дані (вміст сторінки, проміжні сигнали) обробляються лише протягом виконання запиту і не зберігаються. Стандартні технічні журнали сервера (IP, час, статуси) зберігаються у межах розумного строку, необхідного для безпеки та підтримки (зазвичай до 30 днів, якщо інше не вимагає закон або інцидент безпеки).</p>
+
+        <h2 id="security">7. Безпека</h2>
+        <p>Ми застосовуємо технічні та організаційні заходи (контроль доступу, захищені канали, оновлення ПЗ), аби зменшити ризики несанкціонованого доступу чи розкриття даних. Проте жодна онлайн-система не може гарантувати абсолютну безпеку.</p>
+
+        <h2 id="rights">8. Ваші права</h2>
+        <p>Залежно від юрисдикції, ви можете мати права доступу, виправлення, видалення, обмеження обробки, заперечення проти обробки, а також на перенесення даних. Щоб реалізувати права — напишіть нам на <a href="mailto:{{ contact_email or 'privacy@example.com' }}">{{ contact_email or 'privacy@example.com' }}</a>. Ми відповімо у розумний строк згідно з чинним законодавством.</p>
+
+        <h2 id="intl">9. Міжнародні передання</h2>
+        <p>Обробка може здійснюватись на інфраструктурі за межами вашої країни. У таких випадках ми покладаємося на відповідні механізми (наприклад, стандартні договірні положення ЄС), якщо це потрібно законом.</p>
+
+        <h2 id="changes">10. Зміни цієї Політики</h2>
+        <p>Ми можемо періодично оновлювати цю Політику. Нова редакція набирає чинності з моменту публікації на цій сторінці з оновленою датою.</p>
+
+        <h2 id="contact">11. Контакти</h2>
+        <p>Питання щодо приватності: <a href="mailto:{{ contact_email or 'privacy@example.com' }}">{{ contact_email or 'privacy@example.com' }}</a>.<br>
+        Назва сервісу: <b>{{ company_name or "Shopify Detector" }}</b>.</p>
+
+        <div class="footer">
+          <a href="{{ url_for('index') }}">← На головну</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.env.*
+instance/
+.python-version
+
+# venv
+venv/
+.envrc
+
+# IDE
+.vscode/
+.idea/
+
+# OS X
+.DS_Store
+
+# logs
+*.log
+
+# pytest/mypy (если появятся)
+.pytest_cache/
+.mypy_cache/
